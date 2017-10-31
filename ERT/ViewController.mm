@@ -22,15 +22,18 @@ using namespace std;
 
 	// Do any additional setup after loading the view.
 	
+	
+	
 	dlib::array<array2d<unsigned char> > images_train, images_test;
 	std::vector<std::vector<full_object_detection> > faces_train, faces_test;
+	const std::string faces_directory;
 	
 	load_image_dataset(images_train, faces_train, faces_directory+"/training_with_face_landmarks.xml");
 	load_image_dataset(images_test, faces_test, faces_directory+"/testing_with_face_landmarks.xml");
 	
-	  shape_predictor_trainer trainer;
+	shape_predictor_trainer trainer;
 	
-	 trainer.set_oversampling_amount(300);
+	trainer.set_oversampling_amount(300);
 	
 	trainer.set_nu(0.05);
 	trainer.set_tree_depth(2);
@@ -58,6 +61,50 @@ using namespace std;
 
 	// Update the view, if already loaded.
 }
+double interocular_distance (
+							 const full_object_detection& det
+							 )
+{
+	dlib::vector<double,2> l, r;
+	double cnt = 0;
+	// Find the center of the left eye by averaging the points around
+	// the eye.
+	for (unsigned long i = 36; i <= 41; ++i)
+	{
+		l += det.part(i);
+		++cnt;
+	}
+	l /= cnt;
+	
+	// Find the center of the right eye by averaging the points around
+	// the eye.
+	cnt = 0;
+	for (unsigned long i = 42; i <= 47; ++i)
+	{
+		r += det.part(i);
+		++cnt;
+	}
+	r /= cnt;
+	
+	// Now return the distance between the centers of the eyes
+	return length(l-r);
+}
+
+std::vector<std::vector<double> > get_interocular_distances (
+															 const std::vector<std::vector<full_object_detection> >& objects
+															 )
+{
+	std::vector<std::vector<double> > temp(objects.size());
+	for (unsigned long i = 0; i < objects.size(); ++i)
+	{
+		for (unsigned long j = 0; j < objects[i].size(); ++j)
+		{
+			temp[i].push_back(interocular_distance(objects[i][j]));
+		}
+	}
+	return temp;
+}
+
 
 
 @end
