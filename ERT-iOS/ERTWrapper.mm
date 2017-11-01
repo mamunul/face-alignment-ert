@@ -51,6 +51,7 @@
 	cv::line(image, cv::Point2d(originX + rectW,originY + rectH), cv::Point2d(originX + rectW,originY), cv::Scalar(255,255,0));
 	cv::line(image, cv::Point2d(originX + rectW,originY), cv::Point2d(originX,originY), cv::Scalar(255,255,0));
 
+
 	for(int i = 0; i< shape.num_parts();i++)
 	{
 		const dlib::point p = shape.part(i);

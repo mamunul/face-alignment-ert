@@ -16,6 +16,9 @@
 		0C0AB47F1FA71503006AC033 /* ERTUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C0AB47E1FA71503006AC033 /* ERTUITests.m */; };
 		0C0AB4901FA719DB006AC033 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C0AB48F1FA719DB006AC033 /* Foundation.framework */; };
 		0C0AB4921FA719E2006AC033 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C0AB4911FA719E2006AC033 /* AVFoundation.framework */; };
+		0C8133001FA9B8A3005BF0E9 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C8132FF1FA9B8A3005BF0E9 /* CoreMedia.framework */; };
+		0C8133021FA9B8AA005BF0E9 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C8133011FA9B8AA005BF0E9 /* CoreVideo.framework */; };
+		0C8133051FA9BBFA005BF0E9 /* ERT.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C8133031FA9BBFA005BF0E9 /* ERT.cpp */; };
 		0C835C441FA833CC00A007FA /* shape_predictor_68_face_landmarks.dat in Resources */ = {isa = PBXBuildFile; fileRef = 0CD3FBB81FA72F8700103B58 /* shape_predictor_68_face_landmarks.dat */; };
 		0C835C461FA83B9600A007FA /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C835C451FA83B9500A007FA /* opencv2.framework */; };
 		0C835C471FA83BA100A007FA /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C835C451FA83B9500A007FA /* opencv2.framework */; };
@@ -89,6 +92,10 @@
 		0C0AB4801FA71503006AC033 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C0AB48F1FA719DB006AC033 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0C0AB4911FA719E2006AC033 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		0C8132FF1FA9B8A3005BF0E9 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		0C8133011FA9B8AA005BF0E9 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		0C8133031FA9BBFA005BF0E9 /* ERT.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ERT.cpp; sourceTree = "<group>"; };
+		0C8133041FA9BBFA005BF0E9 /* ERT.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = ERT.hpp; sourceTree = "<group>"; };
 		0C835C451FA83B9500A007FA /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = opencv2.framework; sourceTree = "<group>"; };
 		0CD3FBB81FA72F8700103B58 /* shape_predictor_68_face_landmarks.dat */ = {isa = PBXFileReference; lastKnownFileType = file; name = shape_predictor_68_face_landmarks.dat; path = lib/shape_predictor_68_face_landmarks.dat; sourceTree = "<group>"; };
 		0CD3FBC01FA7367400103B58 /* dlib */ = {isa = PBXFileReference; lastKnownFileType = folder; name = dlib; path = lib/dlib; sourceTree = "<group>"; };
@@ -127,6 +134,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0C8133021FA9B8AA005BF0E9 /* CoreVideo.framework in Frameworks */,
+				0C8133001FA9B8A3005BF0E9 /* CoreMedia.framework in Frameworks */,
 				0C835C461FA83B9600A007FA /* opencv2.framework in Frameworks */,
 				0C0AB4921FA719E2006AC033 /* AVFoundation.framework in Frameworks */,
 				0C0AB4901FA719DB006AC033 /* Foundation.framework in Frameworks */,
@@ -217,6 +226,8 @@
 				0C0AB4671FA71503006AC033 /* Main.storyboard */,
 				0C0AB46A1FA71503006AC033 /* Info.plist */,
 				0C0AB45F1FA71503006AC033 /* Supporting Files */,
+				0C8133031FA9BBFA005BF0E9 /* ERT.cpp */,
+				0C8133041FA9BBFA005BF0E9 /* ERT.hpp */,
 			);
 			path = ERT;
 			sourceTree = "<group>";
@@ -250,6 +261,8 @@
 		0C0AB48E1FA719DB006AC033 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0C8133011FA9B8AA005BF0E9 /* CoreVideo.framework */,
+				0C8132FF1FA9B8A3005BF0E9 /* CoreMedia.framework */,
 				0CD3FBFF1FA73A2900103B58 /* VideoToolbox.framework */,
 				0CD3FBFD1FA73A2300103B58 /* AVFoundation.framework */,
 				0CD3FBFB1FA73A1B00103B58 /* Foundation.framework */,
@@ -549,6 +562,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0C0AB4641FA71503006AC033 /* ViewController.mm in Sources */,
+				0C8133051FA9BBFA005BF0E9 /* ERT.cpp in Sources */,
 				0CD3FBC31FA7368200103B58 /* source.cpp in Sources */,
 				0C0AB4611FA71503006AC033 /* main.m in Sources */,
 				0C0AB45E1FA71503006AC033 /* AppDelegate.m in Sources */,
