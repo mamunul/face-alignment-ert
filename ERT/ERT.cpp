@@ -63,8 +63,8 @@ std::vector<std::vector<double> > get_interocular_distances (
 	return temp;
 }
 std::vector<point> LoadGroundTruthShape(string& filename){
-	Mat_<double> shape(global_params.landmark_num,2);
-	std::vector<point> partlist(global_params.landmark_num, OBJECT_PART_NOT_PRESENT);
+	//Mat_<double> shape(global_params.landmark_num,2);
+	std::vector<point> partlist;//(global_params.landmark_num, OBJECT_PART_NOT_PRESENT);
 	ifstream fin;
 	string temp;
 	
@@ -114,7 +114,7 @@ bool IsShapeInRect(std::vector<point> partlist, Rect& rect,double scale){
 }
 
 void adjustImage(Mat_<uchar>& img,
-				 Mat_<double>& ground_truth_shape,
+				 std::vector<point> partlist,
 				 BoundingBox& bounding_box){
 	double left_x  = max(1.0, bounding_box.centroid_x - bounding_box.width*2/3);
 	double top_y   = max(1.0, bounding_box.centroid_y - bounding_box.height*2/3);
@@ -127,9 +127,9 @@ void adjustImage(Mat_<uchar>& img,
 	bounding_box.centroid_x = bounding_box.start_x + bounding_box.width/2.0;
 	bounding_box.centroid_y = bounding_box.start_y + bounding_box.height/2.0;
 	
-	for(int i=0;i<ground_truth_shape.rows;i++){
-		ground_truth_shape(i,0) = ground_truth_shape(i,0)-left_x;
-		ground_truth_shape(i,1) = ground_truth_shape(i,1)-top_y;
+	for(int i=0;i<partlist.size();i++){
+		partlist[i].x() = partlist[i].x()-left_x;
+		partlist[i].y() = partlist[i].y()-top_y;
 	}
 }
 
@@ -145,10 +145,9 @@ void LoadOpencvBbxData(string _folderPath,string filepath,dlib::array<array2d<un
 	std::vector<cv::Rect> faces;
 	cv::Mat gray;
 	
-	cascadeName = folderPath+cascadeName;
 	
 	// --Detection
-	cascade.load(cascadeName);
+	cascade.load(folderPath + cascadeName);
 	
 	//	printf("cas:%s\n",cascadeName.c_str());
 	string name;
@@ -189,6 +188,7 @@ void LoadOpencvBbxData(string _folderPath,string filepath,dlib::array<array2d<un
 				Point center;
 				BoundingBox boundingbox;
 				
+				
 				boundingbox.start_x = r->x*scale;
 				boundingbox.start_y = r->y*scale;
 				boundingbox.width   = (r->width-1)*scale;
@@ -197,18 +197,22 @@ void LoadOpencvBbxData(string _folderPath,string filepath,dlib::array<array2d<un
 				boundingbox.centroid_y = boundingbox.start_y + boundingbox.height/2.0;
 				
 				
-//				adjustImage(image,ground_truth_shape,boundingbox);
+				adjustImage(image,partlist,boundingbox);
 				
 				dlib::array2d<unsigned char> dlibImageGray;
 				dlib::assign_image(dlibImageGray, dlib::cv_image<unsigned char>(image));
 				
 				images.push_back(dlibImageGray);
 				
+				dlib::rectangle rect(boundingbox.start_x,boundingbox.start_y,boundingbox.width,boundingbox.height);
 				
 				
+				full_object_detection shape(rect,partlist);
+				
+				shapePerImage.push_back(shape);
 				
 				
-//				ground_truth_shapes.push_back(ground_truth_shape);
+				ground_truth_shapes.push_back(shapePerImage);
 //				bounding_boxs.push_back(boundingbox);
 
 				break;
@@ -220,12 +224,14 @@ void LoadOpencvBbxData(string _folderPath,string filepath,dlib::array<array2d<un
 
 
 
-void TrainModel(std::vector<std::string> trainDataName,std::string _folderPath){
+void TrainModel(std::vector<std::string> trainDataName,std::vector<std::string> testDataName,std::string _folderPath){
 	
 	extern string folderPath;
 	folderPath = _folderPath;
 	string cascadeName;
 	cascadeName = _folderPath + cascadeName;
+	
+	global_params.landmark_num = 68;
 
 	dlib::array<array2d<unsigned char> > images_train, images_test;
 	std::vector<std::vector<full_object_detection> >  faces_train, faces_test;
@@ -233,24 +239,21 @@ void TrainModel(std::vector<std::string> trainDataName,std::string _folderPath){
 	
 	for(int i=0;i<trainDataName.size();i++){
 		string path;
-		//        if(trainDataName[i]=="helen"||trainDataName[i]=="lfpw")
 		path = _folderPath + dataPath + trainDataName[i] + "/Path_Images.txt";
-		//        else
-		//            path = _folderPath + dataPath + trainDataName[i] + "/Path_Images.txt";
-		
-		
-		// LoadData(path, images, ground_truth_shapes, bounding_boxs);
+
 		LoadOpencvBbxData(folderPath + dataPath + trainDataName[i],path, images_train, faces_train);
 	}
 	
-	std::string  faces_directory;
-//
-	load_image_dataset(images_train, faces_train, faces_directory+"/training_with_face_landmarks.xml");
-//	load_image_dataset(images_test, faces_test, faces_directory+"/testing_with_face_landmarks.xml");
+	for(int i=0;i<testDataName.size();i++){
+		string path;
+		path = _folderPath + dataPath + testDataName[i] + "/Path_Images.txt";
+		
+		LoadOpencvBbxData(folderPath + dataPath + testDataName[i],path, images_test, faces_test);
+	}
 	
 	shape_predictor_trainer trainer;
 	
-	trainer.set_oversampling_amount(300);
+	trainer.set_oversampling_amount(100);
 	
 	trainer.set_nu(0.05);
 	trainer.set_tree_depth(2);
@@ -272,6 +275,6 @@ void TrainModel(std::vector<std::string> trainDataName,std::string _folderPath){
 	test_shape_predictor(sp, images_test, faces_test, get_interocular_distances(faces_test)) << endl;
 	
 	// Finally, we save the model to disk so we can use it later.
-	serialize("sp.dat") << sp;
+	serialize("/Users/mamunul/Downloads/Shape_Prediction_Database/ert/sp.dat") << sp;
 
 }

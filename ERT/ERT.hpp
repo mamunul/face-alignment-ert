@@ -54,6 +54,6 @@ public:
 	};
 };
 
-void TrainModel(std::vector<std::string> trainDataName,std::string _folderPath);
+void TrainModel(std::vector<std::string> trainDataName,std::vector<std::string> testDataName,std::string _folderPath);
 
 #endif /* ERT_hpp */

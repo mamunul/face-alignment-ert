@@ -26,7 +26,7 @@
 -(void)startTraining{
 
 	
-	std::vector<std::string> trainDataName;
+	std::vector<std::string> trainDataName;std::vector<std::string> testDataName;
 	extern std::string modelPath;
 	extern std::string dataPath;
 	extern std::string folderPath;
@@ -39,11 +39,13 @@
 	trainDataName.push_back("helen/trainset");
 	trainDataName.push_back("lfpw/trainset");
 	trainDataName.push_back("afw");
+	
+	testDataName.push_back("helen/trainset");
+	testDataName.push_back("lfpw/trainset");
+	testDataName.push_back("afw");
 
 
-	TrainModel(trainDataName, folderPath);
-
-
+	TrainModel(trainDataName,testDataName, folderPath);
 
 }
 
